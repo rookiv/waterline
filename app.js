@@ -29,6 +29,7 @@ app.all('*', (req, res) => {
     let requestType = req.method;
     let cannedResponse = responses[requestType][req.url];
     let statusCode = parseInt(cannedResponse.status_code);
+    console.log(req.url);
     res.status(statusCode).send(JSON.stringify(cannedResponse.content));
 });
 
