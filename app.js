@@ -3,6 +3,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const express = require('express');
+const url = require('url');
 const app = express();
 
 const isEncryptedServer = false;
@@ -18,15 +19,17 @@ let responses = {
 responseFile.forEach((entry) => {
     Object.keys(responses).forEach((requestType) => {
         if (requestType === entry.request.method) {
-            responses[requestType][entry.request.url] = entry.response;
+            let requestUrl = new URL(entry.request.url);
+            responses[requestType][requestUrl.pathname] = entry.response;
         }
     });
 });
 
-app.all('/:url', (req, res) => {
+app.all('*', (req, res) => {
     let requestType = req.method;
-    let cannedResponse = responses[requestType][req.params.url];
-    res.status(cannedResponse.status_code).send(cannedResponse.content);
+    let cannedResponse = responses[requestType][req.url];
+    let statusCode = parseInt(cannedResponse.status_code);
+    res.status(statusCode).send(cannedResponse.content);
 });
 
 const httpServer = http.createServer(app);
