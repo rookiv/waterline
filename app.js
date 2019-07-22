@@ -29,7 +29,7 @@ app.all('*', (req, res) => {
     let requestType = req.method;
     let cannedResponse = responses[requestType][req.url];
     let statusCode = parseInt(cannedResponse.status_code);
-    res.status(statusCode).send(cannedResponse.content);
+    res.status(statusCode).send(JSON.stringify(cannedResponse.content));
 });
 
 const httpServer = http.createServer(app);
