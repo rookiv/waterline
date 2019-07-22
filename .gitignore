@@ -89,3 +89,4 @@ typings/
 
 .idea/
 package-lock.json
+config.js

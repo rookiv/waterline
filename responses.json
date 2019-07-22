@@ -1,7 +1,7 @@
 [
     {
         "request": {
-            "method": "POST",
+            "method": "GET",
             "url": "https://api.fireteam.net/auth/oauth2/token"
         },
         "response": {

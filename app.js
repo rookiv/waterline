@@ -6,7 +6,7 @@ const express = require('express');
 const url = require('url');
 const app = express();
 
-const isEncryptedServer = false;
+const config = require('./config.js');
 
 // Get canned responses
 const responseFile = require('./responses.json');
@@ -29,8 +29,10 @@ app.all('*', (req, res) => {
     let requestType = req.method;
     let cannedResponse = responses[requestType][req.url];
     let statusCode = parseInt(cannedResponse.status_code);
-    console.log(req.url);
-    res.status(statusCode).send(JSON.stringify(cannedResponse.content));
+
+    res.setHeader("Content-Type", "application/json");
+    res.status(statusCode);
+    res.send(cannedResponse.content);
 });
 
 const httpServer = http.createServer(app);
@@ -40,7 +42,7 @@ httpServer.listen(80, () => {
 });
 
 // Certificate
-if (isEncryptedServer) {
+if (config.isEncryptedServer) {
     const privateKey = fs.readFileSync('/etc/letsencrypt/live/doublecolossus.com/privkey.pem', 'utf8');
     const certificate = fs.readFileSync('/etc/letsencrypt/live/doublecolossus.com/cert.pem', 'utf8');
     const ca = fs.readFileSync('/etc/letsencrypt/live/doublecolossus.com/chain.pem', 'utf8');
