@@ -20,7 +20,7 @@ responseFile.forEach((entry) => {
     Object.keys(responses).forEach((requestType) => {
         if (requestType === entry.request.method) {
             let requestUrl = new URL(entry.request.url);
-            responses[requestType][requestUrl.pathname] = entry.response;
+            responses[requestType][requestUrl.pathname + requestUrl.search] = entry.response;
         }
     });
 });
@@ -28,11 +28,17 @@ responseFile.forEach((entry) => {
 app.all('*', (req, res) => {
     let requestType = req.method;
     let cannedResponse = responses[requestType][req.url];
-    let statusCode = parseInt(cannedResponse.status_code);
 
-    res.setHeader("Content-Type", "application/json");
-    res.status(statusCode);
-    res.send(cannedResponse.content);
+    if (!cannedResponse) {
+        console.log(req.url)
+        res.status(404).send("Not found");
+        return;
+    }
+
+    let statusCode = parseInt(cannedResponse.status_code);
+    res.writeHead(statusCode, {'Content-Type': 'application/json'});
+    res.write(cannedResponse.content);
+    res.end();
 });
 
 const httpServer = http.createServer(app);
