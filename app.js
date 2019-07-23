@@ -74,7 +74,7 @@ app.get('/o/_instances/:instanceId/metadata', (req, res) => {
     };
 
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.write(response);
+    res.write(JSON.stringify(response));
     res.end();
 });
 
@@ -86,7 +86,7 @@ app.post('/o/_instances/:instanceId/associate_with_session', (req, res) => {
     instances[instanceId].sessionId = sessionId;
 
     res.writeHead(200, {'Content-Type': 'application/json'});
-    res.write({});
+    res.write('{}');
     res.end();
 });
 
@@ -149,7 +149,7 @@ app.post('/o/_sessions/create', (req, res) => {
     };
 
     res.writeHead(201, {'Content-Type': 'application/json', 'Content-Location': '/o/_sessions/' + sessionId});
-    res.write(response);
+    res.write(JSON.stringify(response));
     res.end();
 });
 
